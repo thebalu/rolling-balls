@@ -29,10 +29,14 @@ public:
 	~CMyApp(void);
 
 	bool Init();
+	void initFence();
+	void initTable();
 	void Clean();
 
 	void Update();
 	void Render();
+
+	void renderFence();
 
 	void KeyboardDown(SDL_KeyboardEvent&);
 	void KeyboardUp(SDL_KeyboardEvent&);
@@ -46,15 +50,15 @@ protected:
 	void TextureFromFileAttach(const char* filename, GLuint role) const;
 
 	// shaderekhez szükséges változók
-	ProgramObject		m_program;			// shaderek programja
 	//ProgramObject		m_programSkybox;	// skybox shaderek
-
-	VertexArrayObject	m_vao;				// VAO objektum
-	IndexBuffer			m_gpuBufferIndices;	// indexek
-	ArrayBuffer			m_gpuBufferPos;		// pozíciók tömbje
-	ArrayBuffer			m_gpuBufferTex;		// pozíciók tömbje
-	ArrayBuffer			m_gpuBufferNormal;
-	Texture2D			m_textureTable;
+	
+	ProgramObject		table_prog;			// shaderek programja
+	VertexArrayObject	table_vao;				// VAO objektum
+	IndexBuffer			table_indices;	// indexek
+	ArrayBuffer			table_pos;		// pozíciók tömbje
+	ArrayBuffer			table_bufftex;		// pozíciók tömbje
+	ArrayBuffer			table_norm;
+	Texture2D			table_tex;
 
 	ProgramObject		fence_prog;
 	VertexArrayObject	fence_vao;
@@ -64,6 +68,15 @@ protected:
 	ArrayBuffer			fence_norm;
 	Texture2D			fence_tex;
 
+	ProgramObject		sphere_prog;
+	VertexArrayObject	sphere_vao;
+	IndexBuffer			sphere_indices;
+	ArrayBuffer			sphere_pos;
+	ArrayBuffer			sphere_bufftex;
+	//ArrayBuffer			sphere_norm;
+	Texture2D			sphere_tex;
+	void initSphere();
+	glm::vec3 sphere_getUV(float u, float v);
 
 	gCamera				m_camera;
 

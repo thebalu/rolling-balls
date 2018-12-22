@@ -175,6 +175,8 @@
     <None Include="fenceVert.vert" />
     <None Include="skybox.frag" />
     <None Include="skybox.vert" />
+    <None Include="sphereFrag.frag" />
+    <None Include="sphereVert.vert" />
     <None Include="TextureObject.inl">
       <FileType>Document</FileType>
     </None>

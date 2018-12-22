@@ -1,2 +1,4 @@
 ﻿  MyApp.cpp
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(396): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(397): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   01_OGLBase.vcxproj -> D:\elte\3.SEM\cg\nagybead\01_OGLBase\x64\Debug\01_OGLBase.exe

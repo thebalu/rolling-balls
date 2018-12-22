@@ -125,5 +125,11 @@
     <None Include="fenceFrag.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="sphereFrag.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="sphereVert.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
