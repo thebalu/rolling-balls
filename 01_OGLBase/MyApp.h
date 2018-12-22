@@ -26,11 +26,16 @@
 struct Sphere {
 
 	Sphere() {}
-	Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_) {}
+	Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_), v_x(0), v_z(0) {}
+	Sphere(float x_, float z_, float r_, float v_x_, float v_z_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_) {}
 
 	float x, z, r;
 
+	float v_x, v_z;
+
 };
+
+bool checkCollision(const Sphere &a, const Sphere &b);
 
 class CMyApp
 {
@@ -89,7 +94,7 @@ protected:
 	glm::vec3 sphere_getUV(float u, float v);
 	void renderSphere(Sphere ball);
 	std::vector<Sphere> balls;
-
+	void randomBalls(int n);
 
 	gCamera				m_camera;
 

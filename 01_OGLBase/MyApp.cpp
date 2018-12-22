@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include <vector>
+#include <cstdlib>
+#include <random>
 
 #include <array>
 #include <list>
@@ -34,10 +36,7 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-
-	balls.push_back(Sphere(4, 5, 2));
-	balls.push_back(Sphere(-3, 1, 5));
-	balls.push_back(Sphere(12, 12, 1));
+	randomBalls(10);
 
 	return true;
 }
@@ -127,19 +126,19 @@ void CMyApp::renderFence()
 	fence_prog.Use();
 	fence_prog.SetTexture("texImage", 0, fence_tex);
 
-	glm::mat4 fenceTransform = glm::translate(glm::vec3(0, 1, 31)) * glm::scale(glm::vec3(32, 1, 1));
+	glm::mat4 fenceTransform = glm::translate(glm::vec3(0, 2, 31)) * glm::scale(glm::vec3(32, 2, 1));
 	fence_prog.SetUniform("MVP", m_camera.GetViewProj() * fenceTransform);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
-	fenceTransform = glm::translate(glm::vec3(0, 1, -31)) * glm::scale(glm::vec3(32, 1, 1));
+	fenceTransform = glm::translate(glm::vec3(0, 2, -31)) * glm::scale(glm::vec3(32, 2, 1));
 	fence_prog.SetUniform("MVP", m_camera.GetViewProj() * fenceTransform);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
-	fenceTransform = glm::translate(glm::vec3(31, 1, 0)) * glm::scale(glm::vec3(1, 1, 30));
+	fenceTransform = glm::translate(glm::vec3(31, 2, 0)) * glm::scale(glm::vec3(1, 2, 30));
 	fence_prog.SetUniform("MVP", m_camera.GetViewProj() * fenceTransform);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
-	fenceTransform = glm::translate(glm::vec3(-31, 1, 0)) * glm::scale(glm::vec3(1, 1, 30));
+	fenceTransform = glm::translate(glm::vec3(-31, 2, 0)) * glm::scale(glm::vec3(1, 2, 30));
 	fence_prog.SetUniform("MVP", m_camera.GetViewProj() * fenceTransform);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 }
@@ -444,4 +443,28 @@ void CMyApp::renderSphere(Sphere ball)
 	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) * glm::scale(glm::vec3(ball.r,ball.r,ball.r));
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
 	glDrawElements(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, nullptr);
+}
+
+void CMyApp::randomBalls(int n)
+{
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_real_distribution<> dis_pos(-27.0, 27.0);
+	std::uniform_real_distribution<> dis_r(1.0, 3.0);
+	std::uniform_real_distribution<> dis_v(-1.0, 1.0);
+	bool good = false;
+	Sphere s;
+	for (int i = 0; i < n; ++i) {
+		good = false;
+		while (!good) {
+			good = true;
+			s = Sphere(dis_pos(gen), dis_pos(gen), dis_r(gen), dis_v(gen), dis_v(gen));
+			for (auto other : balls) if (checkCollision(s, other)) good = false;
+		}
+		balls.push_back(s);
+	}
+}
+
+bool checkCollision(const Sphere &a, const Sphere &b) {
+	return (a.x - b.x)*(a.x - b.x) + (a.z - b.z) *(a.z - b.z) + (a.r - b.r) * (a.r - b.r) < (a.r + b.r) * (a.r + b.r);
 }
