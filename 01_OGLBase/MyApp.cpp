@@ -34,6 +34,11 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
+
+	balls.push_back(Sphere(4, 5, 2));
+	balls.push_back(Sphere(-3, 1, 5));
+	balls.push_back(Sphere(12, 12, 1));
+
 	return true;
 }
 
@@ -72,9 +77,8 @@ void CMyApp::Render()
 	sphere_vao.Bind();
 	sphere_prog.Use();
 
-	glm::mat4 sphereTrans = glm::translate(glm::vec3(0, 1, 0)) ;
-	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
-	glDrawElements(GL_TRIANGLES, 6*20*20, GL_UNSIGNED_INT, nullptr);
+	for (auto b : balls) renderSphere(b);
+	
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -433,4 +437,11 @@ glm::vec3	CMyApp::sphere_getUV(float u, float v)
 	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
 	float r = 1;
 	return glm::vec3(r*cu*sv, r*cv, r*su*sv);
+}
+
+void CMyApp::renderSphere(Sphere ball)
+{
+	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) * glm::scale(glm::vec3(ball.r,ball.r,ball.r));
+	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
+	glDrawElements(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, nullptr);
 }

@@ -22,6 +22,16 @@
 #include "VertexArrayObject.h"
 #include "TextureObject.h"
 
+
+struct Sphere {
+
+	Sphere() {}
+	Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_) {}
+
+	float x, z, r;
+
+};
+
 class CMyApp
 {
 public:
@@ -77,6 +87,9 @@ protected:
 	Texture2D			sphere_tex;
 	void initSphere();
 	glm::vec3 sphere_getUV(float u, float v);
+	void renderSphere(Sphere ball);
+	std::vector<Sphere> balls;
+
 
 	gCamera				m_camera;
 
