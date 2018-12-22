@@ -51,8 +51,26 @@ void CMyApp::Update()
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
-	m_camera.Update(delta_time);
+	std::cerr << "Update\n";
+	
 
+	
+
+	for (int i = 0; i < balls.size()-1; ++i) {
+		for (int j = i+i; j < balls.size(); ++j) {
+			if (checkCollision(balls[i], balls[j])) {
+				// todo
+			}
+		}
+	}
+	for (int i = 0; i < balls.size(); ++i) {
+		if (balls[i].x - balls[i].r <= -30.0 || balls[i].x + balls[i].r >= 30.0) balls[i].v_x *= -1;
+		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].z >= 30.0) balls[i].v_z *= -1;
+
+		balls[i].move(delta_time);
+	}
+	m_camera.Update(delta_time);
+	
 	last_time = SDL_GetTicks();
 }
 
@@ -451,7 +469,7 @@ void CMyApp::randomBalls(int n)
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis_pos(-27.0, 27.0);
 	std::uniform_real_distribution<> dis_r(1.0, 3.0);
-	std::uniform_real_distribution<> dis_v(-1.0, 1.0);
+	std::uniform_real_distribution<> dis_v(-10.0, 10.0);
 	bool good = false;
 	Sphere s;
 	for (int i = 0; i < n; ++i) {

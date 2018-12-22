@@ -33,6 +33,11 @@ struct Sphere {
 
 	float v_x, v_z;
 
+	void move(float delta_time) {
+		x += v_x * delta_time;
+		z += v_z * delta_time;
+		std::cerr << x << " " << z << "\n";
+	}
 };
 
 bool checkCollision(const Sphere &a, const Sphere &b);
