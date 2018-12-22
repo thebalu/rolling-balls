@@ -26,17 +26,22 @@
 struct Sphere {
 
 	Sphere() {}
-	Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_), v_x(0), v_z(0) {}
-	Sphere(float x_, float z_, float r_, float v_x_, float v_z_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_) {}
+	//Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_), v_x(0), v_z(0) {}
+	Sphere(float x_, float z_, float r_, float v_x_, float v_z_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_), rot_z(0.0), rot_x(0.0) {}
 
 	float x, z, r;
 
 	float v_x, v_z;
 
+	float rot_z, rot_x;
 	void move(float delta_time) {
 		x += v_x * delta_time;
 		z += v_z * delta_time;
-		std::cerr << x << " " << z << "\n";
+
+		rot_z -= v_x * delta_time / r;
+		rot_x += v_z * delta_time  / r;
+
+		//std::cerr << x << " " << z << "\n";
 	}
 };
 

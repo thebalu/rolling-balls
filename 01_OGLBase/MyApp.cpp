@@ -51,21 +51,21 @@ void CMyApp::Update()
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
-	std::cerr << "Update\n";
+	//std::cerr << "Update\n";
 	
 
 	
 
 	for (int i = 0; i < balls.size()-1; ++i) {
-		for (int j = i+i; j < balls.size(); ++j) {
+		for (int j = i+1; j < balls.size(); ++j) {
 			if (checkCollision(balls[i], balls[j])) {
-				// todo
+				std::cerr << "collision "<<i<<" "<<j<< " \n";
 			}
 		}
 	}
 	for (int i = 0; i < balls.size(); ++i) {
 		if (balls[i].x - balls[i].r <= -30.0 || balls[i].x + balls[i].r >= 30.0) balls[i].v_x *= -1;
-		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].z >= 30.0) balls[i].v_z *= -1;
+		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].r >= 30.0) balls[i].v_z *= -1;
 
 		balls[i].move(delta_time);
 	}
@@ -93,7 +93,7 @@ void CMyApp::Render()
 
 	sphere_vao.Bind();
 	sphere_prog.Use();
-
+	sphere_prog.SetTexture("texImage", 0, sphere_tex);
 	for (auto b : balls) renderSphere(b);
 	
 }
@@ -411,12 +411,13 @@ void CMyApp::initSphere()
 	sphere_prog.LinkProgram();
 
 	std::vector<glm::vec3> pos;
-
+	std::vector<glm::vec2> tx;
 	for (int j = 0; j <= 20; ++j) {
 		for (int i = 0; i <= 20; ++i) {
 			float u = i / 20.0;
 			float v = j / 20.0;
 			pos.push_back(sphere_getUV(u, v));
+			tx.push_back(glm::vec2(u, v));
 		}
 	}
 
@@ -434,6 +435,8 @@ void CMyApp::initSphere()
 
 	sphere_pos.BufferData(pos);
 	sphere_indices.BufferData(indices);
+	sphere_bufftex.BufferData(tx);
+	sphere_tex.FromFile("tex_ball12.jpg");
 
 	sphere_vao.Init(
 		{
@@ -458,7 +461,17 @@ glm::vec3	CMyApp::sphere_getUV(float u, float v)
 
 void CMyApp::renderSphere(Sphere ball)
 {
-	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) * glm::scale(glm::vec3(ball.r,ball.r,ball.r));
+	// todo possible solutipon: normalize angles between 0 and 2pi
+
+	glm::vec3 rot_axis = glm::vec3(glm::rotate(3.1415f / 2.0f, glm::vec3(0,1,0)) * glm::vec4(ball.x, 0, ball.z,0));
+	/*glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) 
+							* glm::rotate(ball.rot_z, glm::vec3((glm::rotate(ball.rot_x, glm::vec3(1, 0,0)) * glm::vec4(0,0,1,0))))
+							* glm::rotate(ball.rot_x, glm::vec3(1,0,0)) 
+							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));*/
+
+	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
+		* glm::rotate(glm::sqrt((ball.rot_x + ball.rot_z) * (ball.rot_x + ball.rot_z)), rot_axis)
+		* glm::scale(glm::vec3(ball.r, ball.r, ball.r));
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
 	glDrawElements(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, nullptr);
 }
