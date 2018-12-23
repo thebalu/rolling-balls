@@ -43,9 +43,12 @@ struct Sphere {
 
 		//std::cerr << x << " " << z << "\n";
 	}
+
+	float mass() const { return r * r; }
 };
 
 bool checkCollision(const Sphere &a, const Sphere &b);
+void collide( Sphere &a,  Sphere &b);
 
 class CMyApp
 {

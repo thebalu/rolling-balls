@@ -60,6 +60,7 @@ void CMyApp::Update()
 		for (int j = i+1; j < balls.size(); ++j) {
 			if (checkCollision(balls[i], balls[j])) {
 				std::cerr << "collision "<<i<<" "<<j<< " \n";
+				collide(balls[i], balls[j]);
 			}
 		}
 	}
@@ -463,15 +464,20 @@ void CMyApp::renderSphere(Sphere ball)
 {
 	// todo possible solutipon: normalize angles between 0 and 2pi
 
-	glm::vec3 rot_axis = glm::vec3(glm::rotate(3.1415f / 2.0f, glm::vec3(0,1,0)) * glm::vec4(ball.x, 0, ball.z,0));
-	/*glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) 
-							* glm::rotate(ball.rot_z, glm::vec3((glm::rotate(ball.rot_x, glm::vec3(1, 0,0)) * glm::vec4(0,0,1,0))))
-							* glm::rotate(ball.rot_x, glm::vec3(1,0,0)) 
-							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));*/
+	glm::vec3 dir(ball.rot_x, 0, ball.rot_z);
 
-	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
-		* glm::rotate(glm::sqrt((ball.rot_x + ball.rot_z) * (ball.rot_x + ball.rot_z)), rot_axis)
-		* glm::scale(glm::vec3(ball.r, ball.r, ball.r));
+	glm::vec3 rot_axis = glm::cross( glm::vec3(0,1,0) , glm::vec3(ball.v_x, 0, ball.v_z));
+
+	//std::cerr << "rot axis: " << rot_axis.x << " " << rot_axis.y << " " << rot_axis.z << std::endl;
+	
+	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) 
+							//* glm::rotate(ball.rot_z, /*glm::vec3((glm::rotate(ball.rot_x, glm::vec3(1, 0,0)) * glm::vec4(0,0,1,0)))*/ glm::vec3(0,0,1))
+							//* glm::rotate(ball.rot_z, glm::vec3(0,0,1)) 
+							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));
+
+	/*glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
+		* glm::scale(glm::vec3(ball.r, ball.r, ball.r))
+		* glm::rotate(glm::length(dir) , rot_axis);*/
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
 	glDrawElements(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, nullptr);
 }
@@ -499,3 +505,33 @@ void CMyApp::randomBalls(int n)
 bool checkCollision(const Sphere &a, const Sphere &b) {
 	return (a.x - b.x)*(a.x - b.x) + (a.z - b.z) *(a.z - b.z) + (a.r - b.r) * (a.r - b.r) < (a.r + b.r) * (a.r + b.r);
 }
+
+void collide(Sphere & a, Sphere & b)
+{
+	
+
+	glm::vec2 va(a.v_x, a.v_z), vb(b.v_x, b.v_z);
+	glm::vec2 posa(a.x, a.z), posb(b.x, b.z);
+	glm::vec2 new_va = va - (2 * b.mass()) / (a.mass() + b.mass()) * (glm::dot((va - vb), (posa - posb)) / (glm::length(posa - posb) * glm::length(posa - posb))) * (posa - posb);
+	glm::vec2 new_vb = vb - (2 * a.mass()) / (a.mass() + b.mass()) * (glm::dot((vb - va), (posb - posa)) / (glm::length(posb - posa) * glm::length(posb - posa))) * (posb - posa);
+	
+	a.v_x = new_va.x;
+	a.v_z = new_va.y;
+	b.v_x = new_vb.x;
+	b.v_z = new_vb.y;
+
+}
+
+//void collide(Sphere & a, Sphere & b)
+//{
+//	float new_vx_a = (a.v_x * (a.mass() - b.mass()) + 2 * b.mass() * b.v_x) / (a.mass() + b.mass());
+//	float new_vz_a = (a.v_z * (a.mass() - b.mass()) + 2 * b.mass() * b.v_z) / (a.mass() + b.mass());
+//
+//	float new_vx_b = (b.v_x * (b.mass() - a.mass()) + 2 * a.mass() * a.v_x) / (a.mass() + b.mass());
+//	float new_vz_b = (b.v_z * (b.mass() - a.mass()) + 2 * a.mass() * a.v_z) / (a.mass() + b.mass());
+//
+//	a.v_x = new_vx_a;
+//	a.v_z = new_vz_a;
+//	b.v_x = new_vx_b;
+//	b.v_z = new_vz_b;
+//}
