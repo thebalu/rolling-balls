@@ -108,6 +108,8 @@ protected:
 	void renderSphere(Sphere ball);
 	std::vector<Sphere> balls;
 	void randomBalls(int n);
+	float goFw = 0.0f, goRight = 0.0f;
+
 
 	gCamera				m_camera;
 

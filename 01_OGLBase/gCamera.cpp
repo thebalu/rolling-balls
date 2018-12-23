@@ -6,18 +6,20 @@
 /// <summary>
 /// Initializes a new instance of the <see cref="gCamera"/> class.
 /// </summary>
-gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
+gCamera::gCamera(void) : m_eye(0.0f, 70.0f, 70.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
 {
-	SetView( glm::vec3(0,20,20), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	SetView( glm::vec3(0,70,70), glm::vec3(0,0,0), glm::vec3(0,1,0));
 
 	m_dist = glm::length( m_at - m_eye );	
 
 	SetProj(45.0f, 640/480.0f, 0.001f, 1000.0f);
+	std::cerr << GetEye().x << GetEye().y << GetEye().z<<std::endl;
 }
 
 gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)
 {
 	SetView(_eye, _at, _up);
+
 }
 
 gCamera::~gCamera(void)
@@ -52,24 +54,42 @@ glm::mat4 gCamera::GetViewMatrix()
 
 void gCamera::Update(float _deltaTime)
 {
-	m_eye += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
-	m_at  += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
+	//m_eye += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
+	//m_at  += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
+	m_at = glm::vec3(0, 0, 0);
 
 	m_viewMatrix = glm::lookAt( m_eye, m_at, m_up);
 	m_matViewProj = m_matProj * m_viewMatrix;
 }
+//
+//void gCamera::UpdateUV(float du, float dv)
+//{
+//	m_u		+= du;
+//	m_v		 = glm::clamp<float>(m_v + dv, 0.1f, 3.1f);
+//
+//	m_at = m_eye + m_dist*glm::vec3(	cosf(m_u)*sinf(m_v), 
+//										cosf(m_v), 
+//										sinf(m_u)*sinf(m_v) );
+//
+//	m_fw = glm::normalize( m_at - m_eye );
+//	m_st = glm::normalize( glm::cross( m_fw, m_up ) );
+//}
 
 void gCamera::UpdateUV(float du, float dv)
 {
-	m_u		+= du;
-	m_v		 = glm::clamp<float>(m_v + dv, 0.1f, 3.1f);
+	m_u += du;
+	//m_v = glm::clamp<float>(m_v - dv, 0.1f, 1.5f);
+	float dist = 60;
+	m_v = 0.8;
+	m_eye = m_at + dist * glm::vec3(cosf(m_u)*sinf(m_v),
+		cosf(m_v),
+		sinf(m_u)*sinf(m_v));
 
-	m_at = m_eye + m_dist*glm::vec3(	cosf(m_u)*sinf(m_v), 
-										cosf(m_v), 
-										sinf(m_u)*sinf(m_v) );
+	m_at = glm::vec3(0, 0, 0);
+	m_fw = glm::normalize(m_at - m_eye);
+	m_st = glm::normalize(glm::cross(m_fw, m_up));
+	std::cerr << GetEye().x <<" " << GetEye().y << " "<< GetEye().z << std::endl;
 
-	m_fw = glm::normalize( m_at - m_eye );
-	m_st = glm::normalize( glm::cross( m_fw, m_up ) );
 }
 
 void gCamera::SetSpeed(float _val)

@@ -36,7 +36,10 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	randomBalls(10);
+	randomBalls(1);
+	// mi iranyitjuk a 0. golyot, ne legyen kezdosebessege
+	balls[0].v_x = 0.1;
+	balls[0].v_z = 0;
 
 	return true;
 }
@@ -53,6 +56,15 @@ void CMyApp::Update()
 
 	//std::cerr << "Update\n";
 	
+
+	glm::vec2 cam_dir = glm::normalize( glm::vec2( (m_camera.GetAt() - m_camera.GetEye()).x, (m_camera.GetAt() - m_camera.GetEye()).z));
+	glm::vec2 right_dir(-cam_dir.y, cam_dir.x);
+	glm::vec2 my_vel(balls[0].v_x, balls[0].v_z);
+	my_vel = my_vel + 0.2f * goFw * cam_dir;
+	my_vel = my_vel + 0.2f * goRight * right_dir;
+
+	balls[0].v_x = my_vel.x;
+	balls[0].v_z =  my_vel.y;
 
 	
 
@@ -101,12 +113,38 @@ void CMyApp::Render()
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
 {
-	m_camera.KeyboardDown(key);
+	switch (key.keysym.sym)
+	{
+	case SDLK_w:
+		goFw = 1.0f;
+		break;
+	case SDLK_s:
+		goFw = -1.0f;
+		break;
+	case SDLK_a:
+		goRight = -1.0f;
+		break;
+	case SDLK_d:
+		goRight = 1.0f;
+		break;
+	default:
+		break;
+	}
 }
 
 void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
 {
-	m_camera.KeyboardUp(key);
+	switch (key.keysym.sym)
+	{
+	case SDLK_w:
+	case SDLK_s:
+		goFw = 0.0f;
+		break;
+	case SDLK_a:
+	case SDLK_d:
+		goRight = 0.0f;
+		break;
+	}
 }
 
 void CMyApp::MouseMove(SDL_MouseMotionEvent& mouse)
