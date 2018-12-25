@@ -36,9 +36,9 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	randomBalls(1);
+	randomBalls(10);
 	// mi iranyitjuk a 0. golyot, ne legyen kezdosebessege
-	balls[0].v_x = 0.1;
+	balls[0].v_x = 0;
 	balls[0].v_z = 0;
 
 	return true;

@@ -1,5 +1,4 @@
 ﻿  MyApp.cpp
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(41): warning C4305: '=': truncation from 'double' to 'float'
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(456): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(457): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(536): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
