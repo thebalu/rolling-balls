@@ -27,11 +27,12 @@ struct Sphere {
 
 	Sphere() {}
 	//Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_), v_x(0), v_z(0) {}
-	Sphere(float x_, float z_, float r_, float v_x_, float v_z_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_), rot_z(0.0), rot_x(0.0) {}
+	Sphere(float x_, float z_, float r_, float v_x_, float v_z_, int mat_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_), rot_z(0.0), rot_x(0.0), material(mat_) {}
 
 	float x, z, r;
 
 	float v_x, v_z;
+	int material;
 
 	float rot_z, rot_x;
 	void move(float delta_time) {
@@ -44,7 +45,7 @@ struct Sphere {
 		//std::cerr << x << " " << z << "\n";
 	}
 
-	float mass() const { return r * r; }
+	float mass() const { return material * r * r; }
 };
 
 bool checkCollision(const Sphere &a, const Sphere &b);
@@ -102,7 +103,7 @@ protected:
 	ArrayBuffer			sphere_pos;
 	ArrayBuffer			sphere_bufftex;
 	//ArrayBuffer			sphere_norm;
-	Texture2D			sphere_tex;
+	Texture2D			sphere_tex1 ,sphere_tex2, sphere_tex3;
 	void initSphere();
 	glm::vec3 sphere_getUV(float u, float v);
 	void renderSphere(Sphere ball);
@@ -112,6 +113,7 @@ protected:
 
 
 	gCamera				m_camera;
+	glm::vec3 m_overhead_light;
 
 	// nyers OGL azonosítók
 	GLuint				m_skyboxTexture;

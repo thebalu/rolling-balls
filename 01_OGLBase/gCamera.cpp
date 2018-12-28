@@ -8,12 +8,24 @@
 /// </summary>
 gCamera::gCamera(void) : m_eye(0.0f, 70.0f, 70.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
 {
-	SetView( glm::vec3(0,70,70), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	SetView( glm::vec3(0,70.0f,70.0f), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	
+	m_dist = 60.0;
+	m_v = 0.8;
+	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
+		cosf(m_v),
+		sinf(m_u)*sinf(m_v));
+	std::cerr << "camera constr" << m_eye.x << m_eye.y << m_eye.z << std::endl;
+	m_at = glm::vec3(0, 0, 0);
+	m_fw = glm::normalize(m_at - m_eye);
+	m_st = glm::normalize(glm::cross(m_fw, m_up));
 
-	m_dist = glm::length( m_at - m_eye );	
+	SetView(glm::vec3(0, 70.0f, 70.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
+		cosf(m_v),
+		sinf(m_u)*sinf(m_v));
 
-	SetProj(45.0f, 640/480.0f, 0.001f, 1000.0f);
-	std::cerr << GetEye().x << GetEye().y << GetEye().z<<std::endl;
+
 }
 
 gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)

@@ -41,6 +41,7 @@ bool CMyApp::Init()
 	balls[0].v_x = 0;
 	balls[0].v_z = 0;
 
+
 	return true;
 }
 
@@ -82,6 +83,10 @@ void CMyApp::Update()
 
 		balls[i].move(delta_time);
 	}
+	
+
+	m_overhead_light = glm::vec3(20 * cosf(last_time/1000.0), 10, 20 * sinf(last_time/1000.0));
+
 	m_camera.Update(delta_time);
 	
 	last_time = SDL_GetTicks();
@@ -100,13 +105,18 @@ void CMyApp::Render()
 	table_prog.Use();
 	table_prog.SetTexture("texImage", 0, table_tex);
 	table_prog.SetUniform("MVP", m_camera.GetViewProj());
+	table_prog.SetUniform("world", glm::mat4(1.0f));
+	table_prog.SetUniform("worldIT", glm::mat4(1.0f));
+	table_prog.SetUniform("overhead_light_pos", m_overhead_light);
+	table_prog.SetUniform("camera_pos", m_camera.GetEye());
+	std::cerr << "cam:" << m_camera.GetEye().x << " " << m_camera.GetEye().z << std::endl;
 	glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, nullptr);
 
 	renderFence();
 
 	sphere_vao.Bind();
 	sphere_prog.Use();
-	sphere_prog.SetTexture("texImage", 0, sphere_tex);
+
 	for (auto b : balls) renderSphere(b);
 	
 }
@@ -475,7 +485,9 @@ void CMyApp::initSphere()
 	sphere_pos.BufferData(pos);
 	sphere_indices.BufferData(indices);
 	sphere_bufftex.BufferData(tx);
-	sphere_tex.FromFile("tex_ball12.jpg");
+	sphere_tex1.FromFile("tex_beachball.jpg");
+	sphere_tex2.FromFile("tex_football.jpg");
+	sphere_tex3.FromFile("tex_ball12.jpg");
 
 	sphere_vao.Init(
 		{
@@ -517,6 +529,14 @@ void CMyApp::renderSphere(Sphere ball)
 		* glm::scale(glm::vec3(ball.r, ball.r, ball.r))
 		* glm::rotate(glm::length(dir) , rot_axis);*/
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
+	switch (ball.material)
+	{
+	case 1: sphere_prog.SetTexture("texImage", 0, sphere_tex1); break;
+	case 2: sphere_prog.SetTexture("texImage", 0, sphere_tex2); break;
+	case 3: sphere_prog.SetTexture("texImage", 0, sphere_tex3); break;
+	default:
+		break;
+	}
 	glDrawElements(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, nullptr);
 }
 
@@ -527,13 +547,14 @@ void CMyApp::randomBalls(int n)
 	std::uniform_real_distribution<> dis_pos(-27.0, 27.0);
 	std::uniform_real_distribution<> dis_r(1.0, 3.0);
 	std::uniform_real_distribution<> dis_v(-10.0, 10.0);
+	std::uniform_int_distribution<>  dis_mat(1, 3);
 	bool good = false;
 	Sphere s;
 	for (int i = 0; i < n; ++i) {
 		good = false;
 		while (!good) {
 			good = true;
-			s = Sphere(dis_pos(gen), dis_pos(gen), dis_r(gen), dis_v(gen), dis_v(gen));
+			s = Sphere(dis_pos(gen), dis_pos(gen), dis_r(gen), dis_v(gen), dis_v(gen), dis_mat(gen) );
 			for (auto other : balls) if (checkCollision(s, other)) good = false;
 		}
 		balls.push_back(s);
