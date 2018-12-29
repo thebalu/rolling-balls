@@ -36,7 +36,7 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	randomBalls(10);
+	randomBalls(2);
 	// mi iranyitjuk a 0. golyot, ne legyen kezdosebessege
 	balls[0].v_x = 0;
 	balls[0].v_z = 0;
@@ -78,8 +78,8 @@ void CMyApp::Update()
 		}
 	}
 	for (int i = 0; i < balls.size(); ++i) {
-		if (balls[i].x - balls[i].r <= -30.0 || balls[i].x + balls[i].r >= 30.0) balls[i].v_x *= -1;
-		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].r >= 30.0) balls[i].v_z *= -1;
+	/*	if (balls[i].x - balls[i].r <= -30.0 || balls[i].x + balls[i].r >= 30.0) balls[i].v_x *= -1;
+		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].r >= 30.0) balls[i].v_z *= -1;*/
 
 		balls[i].move(delta_time);
 	}
@@ -516,13 +516,13 @@ void CMyApp::renderSphere(Sphere ball)
 
 	glm::vec3 dir(ball.rot_x, 0, ball.rot_z);
 
-	glm::vec3 rot_axis = glm::cross( glm::vec3(0,1,0) , glm::vec3(ball.v_x, 0, ball.v_z));
+	glm::vec3 rot_axis = glm::cross( glm::vec3(0,1,0) , ball.rotate_dist);
 
+	
 	//std::cerr << "rot axis: " << rot_axis.x << " " << rot_axis.y << " " << rot_axis.z << std::endl;
 	
-	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z)) 
-							//* glm::rotate(ball.rot_z, /*glm::vec3((glm::rotate(ball.rot_x, glm::vec3(1, 0,0)) * glm::vec4(0,0,1,0)))*/ glm::vec3(0,0,1))
-							//* glm::rotate(ball.rot_z, glm::vec3(0,0,1)) 
+	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
+							* ball.rot_matrix()
 							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));
 
 	/*glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
@@ -574,10 +574,25 @@ void collide(Sphere & a, Sphere & b)
 	glm::vec2 new_va = va - (2 * b.mass()) / (a.mass() + b.mass()) * (glm::dot((va - vb), (posa - posb)) / (glm::length(posa - posb) * glm::length(posa - posb))) * (posa - posb);
 	glm::vec2 new_vb = vb - (2 * a.mass()) / (a.mass() + b.mass()) * (glm::dot((vb - va), (posb - posa)) / (glm::length(posb - posa) * glm::length(posb - posa))) * (posb - posa);
 	
+	
+	/*a.last_rot = a.rot_matrix();
+	b.last_rot = b.rot_matrix();
+*/
 	a.v_x = new_va.x;
 	a.v_z = new_va.y;
 	b.v_x = new_vb.x;
 	b.v_z = new_vb.y;
+
+	a.reset_rotation();
+	b.reset_rotation();
+	//a.rot_x = 0;
+	//b.rot_x = 0;
+	//a.rot_z = 0;
+	//b.rot_z = 0;
+	//a.rotate_dist = glm::vec3(0, 0, 0);
+	//b.rotate_dist = glm::vec3(0, 0, 0);
+	//a.rot_angle = 0;
+	//b.rot_angle = 0;
 
 }
 
