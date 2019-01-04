@@ -90,8 +90,11 @@ void gCamera::UpdateUV(float du, float dv)
 {
 	m_u += du;
 	m_v = glm::clamp<float>(m_v - dv, 0.1f, 1.5f);
-	//float dist = 60;
-	//m_v = 0.8;
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Ha a leiras szerint akarjuk (maradjon a kamera sikban), uncommenteljuk az alabbi sort:
+	//m_v = 0.8;  
+	
 	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
 		cosf(m_v),
 		sinf(m_u)*sinf(m_v));

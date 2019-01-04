@@ -1,10 +1,3 @@
-﻿  MyApp.cpp
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\sphere.h(29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\sphere.h(30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\sphere.h(31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\sphere.h(32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(88): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(481): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(482): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(571): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+﻿  gCamera.cpp
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\gcamera.cpp(17): warning C4305: '=': truncation from 'double' to 'float'
   01_OGLBase.vcxproj -> D:\elte\3.SEM\cg\nagybead\01_OGLBase\x64\Debug\01_OGLBase.exe
