@@ -40,8 +40,29 @@ struct Sphere {
 	glm::mat4 last_rot;
 
 	void move(float delta_time) {
-		if (x - r <= -30.0 || x + r >= 30.0) { v_x *= -1; reset_rotation(); }
-		if (z - r <= -30.0 || z + r >= 30.0) { v_z *= -1; reset_rotation(); }
+
+		if (x - r <= -30.0) { v_x *= -1; reset_rotation(); x = -29.99 + r;}
+		if (x + r >= 30.0) { v_x *= -1; reset_rotation(); x = 29.99 - r; }
+		if (z + r >= 30.0) { v_z *= -1; reset_rotation(); z = 29.99 - r; }
+		if (z - r <= -30.0) { v_z *= -1; reset_rotation(); z = -29.99 + r; }
+
+		
+		glm::vec3 vel(v_x, 0, v_z);
+		if (glm::length(vel) > 0) {
+			glm::vec3 acceleration = -3.0f * delta_time / mass() * glm::normalize(vel);
+			if (glm::length(vel) < glm::length(acceleration)) {
+				reset_rotation();
+				vel = glm::vec3(0.0f);
+				v_x = 0;
+				v_z = 0;
+				acceleration = glm::vec3(0.0f);
+			}
+			else {
+				vel += acceleration;
+				v_x = vel.x;
+				v_z = vel.z;
+			}
+		}
 
 		x += v_x * delta_time;
 		z += v_z * delta_time;
@@ -55,7 +76,8 @@ struct Sphere {
 	}
 
 	glm::mat4 rot_matrix() const {
-		if (rotate_dist == glm::vec3(0, 0, 0)) return last_rot;
+		if (v_x == 0 && v_z == 0 || rotate_dist == glm::vec3(0, 0, 0))  return last_rot;
+		
 		glm::vec3 rot_axis = glm::cross(glm::vec3(0, 1, 0), rotate_dist);
 		return glm::rotate(rot_angle, rot_axis)* last_rot;
 	}
@@ -67,7 +89,7 @@ struct Sphere {
 		rotate_dist = glm::vec3(0, 0, 0);
 		rot_angle = 0;
 	}
-	float mass() const { return material * r * r; }
+	float mass() const { return material * r * r * r; }
 };
 
 bool checkCollision(const Sphere &a, const Sphere &b);

@@ -6,24 +6,23 @@
 /// <summary>
 /// Initializes a new instance of the <see cref="gCamera"/> class.
 /// </summary>
-gCamera::gCamera(void) : m_eye(0.0f, 70.0f, 70.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
+gCamera::gCamera(void) : m_eye(70.0f, 30.0f, 0.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
 {
-	SetView( glm::vec3(0,70.0f,70.0f), glm::vec3(0,0,0), glm::vec3(0,1,0));
-	
-	m_dist = 60.0;
+	SetView( glm::vec3(70.0f,30.0f,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	m_dist = glm::length(m_at - m_eye);
+
+	//SetProj(45.0f, 640 / 480.0f, 0.001f, 1000.0f);
+
+	///*m_dist = 60.0;
 	m_v = 0.8;
 	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
 		cosf(m_v),
 		sinf(m_u)*sinf(m_v));
-	std::cerr << "camera constr" << m_eye.x << m_eye.y << m_eye.z << std::endl;
-	m_at = glm::vec3(0, 0, 0);
-	m_fw = glm::normalize(m_at - m_eye);
-	m_st = glm::normalize(glm::cross(m_fw, m_up));
+	////std::cerr << "camera constr" << m_eye.x << m_eye.y << m_eye.z << std::endl;
+	//m_at = glm::vec3(0, 0, 0);
+	//m_fw = glm::normalize(m_at - m_eye);
+	//m_st = glm::normalize(glm::cross(m_fw, m_up));
 
-	SetView(glm::vec3(0, 70.0f, 70.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
-		cosf(m_v),
-		sinf(m_u)*sinf(m_v));
 
 
 }
@@ -90,10 +89,10 @@ void gCamera::Update(float _deltaTime)
 void gCamera::UpdateUV(float du, float dv)
 {
 	m_u += du;
-	//m_v = glm::clamp<float>(m_v - dv, 0.1f, 1.5f);
-	float dist = 60;
-	m_v = 0.8;
-	m_eye = m_at + dist * glm::vec3(cosf(m_u)*sinf(m_v),
+	m_v = glm::clamp<float>(m_v - dv, 0.1f, 1.5f);
+	//float dist = 60;
+	//m_v = 0.8;
+	m_eye = m_at + m_dist * glm::vec3(cosf(m_u)*sinf(m_v),
 		cosf(m_v),
 		sinf(m_u)*sinf(m_v));
 

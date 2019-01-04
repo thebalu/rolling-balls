@@ -1,8 +1,18 @@
 ﻿  MyApp.cpp
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(47): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(88): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(466): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(467): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(557): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(547): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(575): warning C4305: 'argument': truncation from 'double' to 'float'
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.cpp(576): warning C4305: 'argument': truncation from 'double' to 'float'
   main.cpp
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(46): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\elte\3.sem\cg\nagybead\01_oglbase\01_oglbase\myapp.h(47): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Generating Code...
   01_OGLBase.vcxproj -> D:\elte\3.SEM\cg\nagybead\01_OGLBase\x64\Debug\01_OGLBase.exe

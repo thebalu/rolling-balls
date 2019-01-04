@@ -12,7 +12,7 @@
 
 CMyApp::CMyApp(void)
 {
-	m_camera.SetView(glm::vec3(5, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	//m_camera.SetView(glm::vec3(70.0, 70.0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 }
 
 
@@ -36,7 +36,7 @@ bool CMyApp::Init()
 
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	randomBalls(2);
+	randomBalls(10);
 	// mi iranyitjuk a 0. golyot, ne legyen kezdosebessege
 	balls[0].v_x = 0;
 	balls[0].v_z = 0;
@@ -67,7 +67,7 @@ void CMyApp::Update()
 	balls[0].v_x = my_vel.x;
 	balls[0].v_z =  my_vel.y;
 
-	
+	balls[0].reset_rotation();
 
 	for (int i = 0; i < balls.size()-1; ++i) {
 		for (int j = i+1; j < balls.size(); ++j) {
@@ -109,7 +109,7 @@ void CMyApp::Render()
 	table_prog.SetUniform("worldIT", glm::mat4(1.0f));
 	table_prog.SetUniform("overhead_light_pos", m_overhead_light);
 	table_prog.SetUniform("camera_pos", m_camera.GetEye());
-	std::cerr << "cam:" << m_camera.GetEye().x << " " << m_camera.GetEye().z << std::endl;
+	//std::cerr << "cam:" << m_camera.GetEye().x << " " << m_camera.GetEye().z << std::endl;
 	glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, nullptr);
 
 	renderFence();
@@ -117,8 +117,8 @@ void CMyApp::Render()
 	sphere_vao.Bind();
 	sphere_prog.Use();
 
-	for (auto b : balls) renderSphere(b);
-	
+	//for (auto b : balls) renderSphere(b);
+	for (int i = 0; i < balls.size(); ++i) renderSphere(balls[i]);
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -512,22 +512,12 @@ glm::vec3	CMyApp::sphere_getUV(float u, float v)
 
 void CMyApp::renderSphere(Sphere ball)
 {
-	// todo possible solutipon: normalize angles between 0 and 2pi
-
-	glm::vec3 dir(ball.rot_x, 0, ball.rot_z);
-
-	glm::vec3 rot_axis = glm::cross( glm::vec3(0,1,0) , ball.rotate_dist);
-
-	
-	//std::cerr << "rot axis: " << rot_axis.x << " " << rot_axis.y << " " << rot_axis.z << std::endl;
-	
+	std::cerr << "rendering ball " << ball.r << std::endl;
 	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
 							* ball.rot_matrix()
 							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));
 
-	/*glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
-		* glm::scale(glm::vec3(ball.r, ball.r, ball.r))
-		* glm::rotate(glm::length(dir) , rot_axis);*/
+
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
 	switch (ball.material)
 	{
@@ -574,38 +564,20 @@ void collide(Sphere & a, Sphere & b)
 	glm::vec2 new_va = va - (2 * b.mass()) / (a.mass() + b.mass()) * (glm::dot((va - vb), (posa - posb)) / (glm::length(posa - posb) * glm::length(posa - posb))) * (posa - posb);
 	glm::vec2 new_vb = vb - (2 * a.mass()) / (a.mass() + b.mass()) * (glm::dot((vb - va), (posb - posa)) / (glm::length(posb - posa) * glm::length(posb - posa))) * (posb - posa);
 	
-	
-	/*a.last_rot = a.rot_matrix();
-	b.last_rot = b.rot_matrix();
-*/
+
 	a.v_x = new_va.x;
 	a.v_z = new_va.y;
 	b.v_x = new_vb.x;
 	b.v_z = new_vb.y;
 
+	// to prevent sticking together, move them apart until they no longer collide
+	while (checkCollision(a, b)) {
+		a.move(0.01);
+		b.move(0.01);
+	}
+
 	a.reset_rotation();
 	b.reset_rotation();
-	//a.rot_x = 0;
-	//b.rot_x = 0;
-	//a.rot_z = 0;
-	//b.rot_z = 0;
-	//a.rotate_dist = glm::vec3(0, 0, 0);
-	//b.rotate_dist = glm::vec3(0, 0, 0);
-	//a.rot_angle = 0;
-	//b.rot_angle = 0;
+
 
 }
-
-//void collide(Sphere & a, Sphere & b)
-//{
-//	float new_vx_a = (a.v_x * (a.mass() - b.mass()) + 2 * b.mass() * b.v_x) / (a.mass() + b.mass());
-//	float new_vz_a = (a.v_z * (a.mass() - b.mass()) + 2 * b.mass() * b.v_z) / (a.mass() + b.mass());
-//
-//	float new_vx_b = (b.v_x * (b.mass() - a.mass()) + 2 * a.mass() * a.v_x) / (a.mass() + b.mass());
-//	float new_vz_b = (b.v_z * (b.mass() - a.mass()) + 2 * a.mass() * a.v_z) / (a.mass() + b.mass());
-//
-//	a.v_x = new_vx_a;
-//	a.v_z = new_vz_a;
-//	b.v_x = new_vx_b;
-//	b.v_z = new_vz_b;
-//}
