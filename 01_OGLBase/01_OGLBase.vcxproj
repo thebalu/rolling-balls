@@ -157,6 +157,7 @@
     <ClInclude Include="MyApp.h" />
     <ClInclude Include="ProgramObject.h" />
     <ClInclude Include="ShaderObject.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="T:\OGLPack\include\imgui\imconfig.h" />
     <ClInclude Include="T:\OGLPack\include\imgui\imgui.h" />
     <ClInclude Include="T:\OGLPack\include\imgui\imgui_impl_sdl_gl3.h" />
@@ -173,13 +174,12 @@
     <ClCompile Include="ShaderObject.cpp" />
     <None Include="fenceFrag.frag" />
     <None Include="fenceVert.vert" />
-    <None Include="skybox.frag" />
-    <None Include="skybox.vert" />
     <None Include="sphereFrag.frag" />
     <None Include="sphereVert.vert" />
     <None Include="TextureObject.inl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="T:\OGLPack\include\imgui\imgui.cpp" />
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_demo.cpp" />
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_draw.cpp" />

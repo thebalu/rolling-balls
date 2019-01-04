@@ -60,6 +60,9 @@
     <ClInclude Include="T:\OGLPack\include\imgui\imgui_internal.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyApp.cpp">
@@ -93,6 +96,9 @@
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_impl_sdl_gl3.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag">
@@ -112,12 +118,6 @@
     </None>
     <None Include="TextureObject.inl">
       <Filter>GL utilities</Filter>
-    </None>
-    <None Include="skybox.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="skybox.frag">
-      <Filter>Shaders</Filter>
     </None>
     <None Include="fenceVert.vert">
       <Filter>Shaders</Filter>
