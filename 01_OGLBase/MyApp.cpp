@@ -40,7 +40,7 @@ bool CMyApp::Init()
 	// mi iranyitjuk a 0. golyot, ne legyen kezdosebessege
 	balls[0].v_x = 0;
 	balls[0].v_z = 0;
-
+	balls[0].is_gold = true;
 
 	return true;
 }
@@ -61,8 +61,8 @@ void CMyApp::Update()
 	glm::vec2 cam_dir = glm::normalize( glm::vec2( (m_camera.GetAt() - m_camera.GetEye()).x, (m_camera.GetAt() - m_camera.GetEye()).z));
 	glm::vec2 right_dir(-cam_dir.y, cam_dir.x);
 	glm::vec2 my_vel(balls[0].v_x, balls[0].v_z);
-	my_vel = my_vel + 0.2f * goFw * cam_dir;
-	my_vel = my_vel + 0.2f * goRight * right_dir;
+	my_vel = my_vel + 0.3f * goFw * cam_dir;
+	my_vel = my_vel + 0.3f * goRight * right_dir;
 
 	balls[0].v_x = my_vel.x;
 	balls[0].v_z =  my_vel.y;
@@ -86,6 +86,7 @@ void CMyApp::Update()
 	
 
 	m_overhead_light = glm::vec3(20 * cosf(last_time/1000.0), 10, 20 * sinf(last_time/1000.0));
+	//m_overhead_light = glm::vec3(20 , 10, 20 );
 
 	m_camera.Update(delta_time);
 	
@@ -109,6 +110,8 @@ void CMyApp::Render()
 	table_prog.SetUniform("worldIT", glm::mat4(1.0f));
 	table_prog.SetUniform("overhead_light_pos", m_overhead_light);
 	table_prog.SetUniform("camera_pos", m_camera.GetEye());
+	table_prog.SetUniform("ball_light_pos", glm::vec3(balls[0].x, balls[0].r, balls[0].z));
+
 	//std::cerr << "cam:" << m_camera.GetEye().x << " " << m_camera.GetEye().z << std::endl;
 	glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, nullptr);
 
@@ -195,6 +198,7 @@ void CMyApp::renderFence()
 
 	fence_prog.SetUniform("overhead_light_pos", m_overhead_light);
 	fence_prog.SetUniform("camera_pos", m_camera.GetEye());
+	fence_prog.SetUniform("ball_light_pos", glm::vec3(balls[0].x, balls[0].r, balls[0].z));
 
 	glm::mat4 fenceTransform = glm::translate(glm::vec3(0, 2, 31)) * glm::scale(glm::vec3(32, 2, 1));
 	fence_prog.SetUniform("MVP", m_camera.GetViewProj() * fenceTransform);
@@ -530,6 +534,15 @@ void CMyApp::renderSphere(Sphere ball)
 
 
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
+	sphere_prog.SetUniform("world", sphereTrans);
+	sphere_prog.SetUniform("worldIT", glm::inverse(glm::transpose(sphereTrans)));
+	sphere_prog.SetUniform("overhead_light_pos", m_overhead_light);
+	sphere_prog.SetUniform("camera_pos", m_camera.GetEye());
+	sphere_prog.SetUniform("ball_light_pos", glm::vec3(balls[0].x, balls[0].r, balls[0].z));
+
+
+	sphere_prog.SetUniform("is_gold", int(ball.is_gold));
+
 	switch (ball.material)
 	{
 	case 1: sphere_prog.SetTexture("texImage", 0, sphere_tex1); break;
