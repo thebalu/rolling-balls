@@ -12,7 +12,7 @@ struct Sphere {
 	Sphere() {}
 	//Sphere(float x_, float z_, float r_) : x(x_), z(z_), r(r_), v_x(0), v_z(0) {}
 	Sphere(float x_, float z_, float r_, float v_x_, float v_z_, int mat_) : x(x_), z(z_), r(r_), v_x(v_x_), v_z(v_z_), rot_z(0.0),
-		rot_x(0.0), material(mat_), rotate_dist(glm::vec3(0, 0, 0)), last_rot(glm::rotate(0.0f, glm::vec3(1, 0, 0))) , is_gold(false) {}
+		rot_x(0.0), material(mat_), rotate_dist(glm::vec3(0, 0, 0)), last_rot(glm::rotate(0.0f, glm::vec3(1, 0, 0))) , is_gold(false), alive(true), stopped_since(0) {}
 
 	float x, z, r;
 
@@ -23,8 +23,10 @@ struct Sphere {
 	glm::vec3 rotate_dist;
 	glm::mat4 last_rot;
 	bool is_gold;
-
+	bool alive;
 	void move(float delta_time);
+
+	float stopped_since;
 
 	glm::mat4 rot_matrix() const {
 		if (v_x == 0 && v_z == 0 || rotate_dist == glm::vec3(0, 0, 0))  return last_rot;

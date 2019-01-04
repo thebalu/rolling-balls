@@ -80,8 +80,8 @@ void CMyApp::Update()
 	for (int i = 0; i < balls.size(); ++i) {
 	/*	if (balls[i].x - balls[i].r <= -30.0 || balls[i].x + balls[i].r >= 30.0) balls[i].v_x *= -1;
 		if (balls[i].z - balls[i].r <= -30.0 || balls[i].z + balls[i].r >= 30.0) balls[i].v_z *= -1;*/
-
-		balls[i].move(delta_time);
+		if(balls[i].stopped_since <= 6.0)
+			balls[i].move(delta_time);
 	}
 	
 
@@ -527,11 +527,22 @@ glm::vec3	CMyApp::sphere_getUV(float u, float v)
 
 void CMyApp::renderSphere(Sphere ball)
 {
-	std::cerr << "rendering ball " << ball.r << std::endl;
-	glm::mat4 sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
-							* ball.rot_matrix()
-							* glm::scale(glm::vec3(ball.r,ball.r,ball.r));
+	//std::cerr << "rendering ball " << ball.r << std::endl;
+	glm::mat4 sphereTrans;
+	if (!ball.alive) {
+		if (ball.stopped_since > 6.0) return;
 
+		sphereTrans = glm::translate(glm::vec3(ball.x, ball.r * (5.5 -ball.stopped_since ) * 2, ball.z))
+			* ball.rot_matrix()
+			* glm::scale(glm::vec3(ball.r, ball.r, ball.r));
+	}
+	else
+	{
+		sphereTrans = glm::translate(glm::vec3(ball.x, ball.r, ball.z))
+			* ball.rot_matrix()
+			* glm::scale(glm::vec3(ball.r, ball.r, ball.r));
+
+	}
 
 	sphere_prog.SetUniform("MVP", m_camera.GetViewProj()*sphereTrans);
 	sphere_prog.SetUniform("world", sphereTrans);

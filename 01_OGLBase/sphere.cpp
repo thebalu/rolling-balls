@@ -1,14 +1,17 @@
 #include "sphere.h"
+#include "iostream"
 
 
 
 bool checkCollision(const Sphere &a, const Sphere &b) {
+	if (!a.alive || !b.alive) return false;
 	return (a.x - b.x)*(a.x - b.x) + (a.z - b.z) *(a.z - b.z) + (a.r - b.r) * (a.r - b.r) < (a.r + b.r) * (a.r + b.r);
 }
 
 void collide(Sphere & a, Sphere & b)
 {
 
+	if (!a.alive || !b.alive) return;
 
 	glm::vec2 va(a.v_x, a.v_z), vb(b.v_x, b.v_z);
 	glm::vec2 posa(a.x, a.z), posb(b.x, b.z);
@@ -65,6 +68,11 @@ void Sphere::move(float delta_time) {
 	rot_x += v_z * delta_time / r;
 	rotate_dist += glm::vec3(v_x * delta_time, 0, v_z * delta_time);
 	rot_angle = glm::length(rotate_dist) / r;
+
+	if (v_x <= 0.01 && v_z <= 0.01) { stopped_since += delta_time;  std::cerr << stopped_since << std::endl; }
+	else stopped_since = 0;
+
+	if (stopped_since > 5.0 && !is_gold) alive = false; 
 
 	//std::cerr << x << " " << z << "\n";
 }
